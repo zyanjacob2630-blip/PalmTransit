@@ -1,32 +1,43 @@
-# PalmTransit — Campus Shuttle Agent (Demo)
+# PalmTransit — Gemini-powered demo
 
-A Streamlit demo for campus shuttle disruption management and commuter assistance. **All data is simulated; this is not a live transit system.**
+Campus shuttle disruption and commuter agent with **simulated data**. Gemini is used for conversational reasoning and tool calling; the Python rules and officer approval guardrails remain in charge of safety-critical actions.
 
-## Run locally
-1. Install Python 3.10+
-2. Open a terminal in this folder
-3. Run:
+## Install and run (Windows)
+1. Extract the folder.
+2. Install Python 3.10 or newer.
+3. Open terminal in this folder and run:
    ```bash
-   python -m venv .venv
-   # Windows: .venv\\Scripts\\activate
-   # macOS/Linux: source .venv/bin/activate
    pip install -r requirements.txt
+   ```
+4. Create a `.env` file in this folder. Copy `.env.example` and paste your Gemini key into `GEMINI_API_KEY`.
+5. Start:
+   ```bash
    streamlit run app.py
    ```
 
-## Features
-- Scenario switcher (normal, sandstorm, event barrier, GPS conflict/stale/dark, crowding, accessibility, combined)
-- Rule-based status resolver and honest fallback messaging
-- Commuter question interface
-- Smart boarding stop suggestions
-- Reroute proposals staged for Transport Officer review
-- Approval/rejection actions and SQLite audit trail
+## API key setup
+- Get a key from Google AI Studio: https://aistudio.google.com/app/apikey
+- `.env` is ignored by Git. **Never commit or share your key.**
+- Streamlit Cloud users can use app settings → Secrets with:
+  ```toml
+  GEMINI_API_KEY = "your-key"
+  GEMINI_MODEL = "gemini-2.5-flash"
+  ```
 
-## Important demo boundaries
-- GPS, weather, crowd, route and timetable feeds are mock/simulated.
-- No LLM API is connected in this starter repository. Commuter answers use deterministic templates, so the project can run without API keys.
-- Reroute approval changes proposal state in the demo database; it does not affect actual vehicles.
-- For real deployment, integrate authenticated feeds, map/routing APIs, secure identity/roles, and safety validation.
+## Gemini agent tools
+- `service_status`: read simulated status feeds
+- `alerts`: read simulated alert feeds
+- `boarding_stops`: query stop recommendations
+- `stage_reroute`: stage a proposal for officer review
 
-## Architecture
-Streamlit UI → commuter/reroute logic → simulated data tools + rule-based resolver → SQLite audit/proposal storage → officer review.
+Gemini can call these tools. Route proposals never become operational from the AI response alone. The officer console remains the approval gate.
+
+## Demo data and limitations
+- GPS, weather, events, crowding, stops and timetable information are simulated.
+- This is not connected to real shuttle vehicles or feeds.
+- A reroute proposal does not change real service.
+- The demo uses rule-based simulated feed resolution and fallback messaging.
+- Keep your API key private and monitor your API provider's usage limits.
+
+## Start
+`streamlit run app.py`
